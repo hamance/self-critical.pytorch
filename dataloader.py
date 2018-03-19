@@ -19,6 +19,26 @@ def get_npy_data(ix, fc_file, att_file, use_att):
     else:
         return (np.load(fc_file), np.zeros((1,1,1)), ix)
 
+
+class MMPLoader():
+    def __init__(self, att_mmp, fc_mmp, att_json, fc_json, use_att):
+        self.file2fc = json.load(open(fc_json, 'r'))
+        fc_shape = (len(self.file2fc), 2048)
+        print("fc feat shapes: ", fc_shape)
+        self.fc = np.memmap(fc_mmp, dtype='float32', mode='r', shape=fc_shape)
+        if use_att:
+            self.file2att = json.load(open(att_json, 'r'))
+            att_shape = (len(self.file2att), 14, 14, 2048)
+            print("att feat shapes: ", att_shape)
+            self.att = np.memmap(att_mmp, dtype='float32', mode='r', shape=att_shape)
+
+    def get_mmp_data(self, ix, fc_file, att_file, use_att):
+        if use_att == True:
+            return (self.fc[self.file2fc[fc_file]], self.att[self.file2att[att_file]], ix)
+        else:
+            return (self.fc[self.file2fc[fc_file]], np.zeros((1,1,1)), ix)
+
+
 class DataLoader(data.Dataset):
 
     def reset_iterator(self, split):
@@ -40,6 +60,8 @@ class DataLoader(data.Dataset):
         self.batch_size = self.opt.batch_size
         self.seq_per_img = opt.seq_per_img
         self.use_att = getattr(opt, 'use_att', True)
+
+        self.mmploader = MMPLoader(opt.att_mmp, opt.fc_mmp, opt.att_json, opt.fc_json, self.use_att)
 
         # load the json file which contains additional information about the dataset
         print('DataLoader loading json file: ', opt.input_json)
@@ -176,11 +198,16 @@ class DataLoader(data.Dataset):
         """This function returns a tuple that is further passed to collate_fn
         """
         ix = index #self.split_ix[index]
-        return get_npy_data(ix, \
+        return self.mmploader.get_mmp_data(ix, 
                 os.path.join(self.input_fc_dir, str(self.info['images'][ix]['id']) + '.npy'),
                 os.path.join(self.input_att_dir, str(self.info['images'][ix]['id']) + '.npz'),
                 self.use_att
                 )
+        # return get_npy_data(ix, \
+        #         os.path.join(self.input_fc_dir, str(self.info['images'][ix]['id']) + '.npy'),
+        #         os.path.join(self.input_att_dir, str(self.info['images'][ix]['id']) + '.npz'),
+        #         self.use_att
+        #         )
 
     def __len__(self):
         return len(self.info['images'])

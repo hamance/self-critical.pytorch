@@ -26,15 +26,15 @@ def main(params):
     for idx, fp in tqdm.tqdm(enumerate(fpaths)):
         if feat_type == 'fc':
             feat = np.load(fp)
-        else if feat_type == 'att':
+        elif feat_type == 'att':
             feat = np.load(fp)['feat']
         else:
             raise ValueError("Invalid feat type, should be fc or att.")
 
         if not feat_mmp:
-            mmp_shape = (len(fpaths), + feat.shape)
+            mmp_shape = (len(fpaths),) + feat.shape
             print("mmp shape: ", mmp_shape)
-            feat_mmp = np.memmap(params['output_path'] + '.mmp', dtype=float32, mode='w+', shape=(len(fpaths), + feat.shape))
+            feat_mmp = np.memmap(params['output_path'] + '.mmp', dtype='float32', mode='w+', shape=mmp_shape)
 
         feat_mmp[idx] = feat
         fp2id[fp] = idx
@@ -50,10 +50,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # feature_dir
-    parser.add_argument('--type', require=True, help='input feature directory')
-    parser.add_argument('--input_dir', require=True, help='input feature directory')
-    parser.add_argument('--output_path', require=True, help='output feature memmap file')
-    # parser.add_argument('--feat_shape', require=True, help='intput feat shape')
+    parser.add_argument('--type', required=True, help='input feature directory')
+    parser.add_argument('--input_dir', required=True, help='input feature directory')
+    parser.add_argument('--output_path', required=True, help='output feature memmap file')
+    # parser.add_argument('--feat_shape', required=True, help='intput feat shape')
 
     args = parser.parse_args()
     params = vars(args)

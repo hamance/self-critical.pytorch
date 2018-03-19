@@ -21,6 +21,16 @@ def parse_opt():
     parser.add_argument('--cached_tokens', type=str, default='coco-train-idxs',
                     help='Cached token file for calculating cider score during self critical training.')
 
+    # feature input settings
+    parser.add_argument('--att_mmp', type=str, default='data/coco_talk_att.mmp',
+                    help='path to the mmp file containing att features')
+    parser.add_argument('--fc_mmp', type=str, default='data/coco_talk_fc.mmp',
+                    help='path to the mmp file containing fc features')
+    parser.add_argument('--att_json', type=str, default='data/coco_talk_att.json',
+                    help='path to the json file containing dict from filepath to line index')
+    parser.add_argument('--fc_json', type=str, default='data/coco_talk_fc.json',
+                    help='path to the json file containing dict from filepath to line index')
+
     # Model settings
     parser.add_argument('--caption_model', type=str, default="show_tell",
                     help='show_tell, show_attend_tell, all_img, fc, att2in, att2in2, adaatt, adaattmo, topdown')
