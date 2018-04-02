@@ -34,6 +34,8 @@ def setup(opt):
     # Top-down attention model
     elif opt.caption_model == 'topdown':
         model = TopDownModel(opt)
+    elif opt.caption_model == 'showtell':
+        model = ShowTellModel(opt)
     else:
         raise Exception("Caption model not supported: {}".format(opt.caption_model))
 

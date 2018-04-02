@@ -96,7 +96,7 @@ def eval_split(model, crit, loader, eval_kwargs={}):
         fc_feats, att_feats = tmp
         # forward the model to also get generated samples for each image
         seq, _ = model.sample(fc_feats, att_feats, eval_kwargs)
-        
+
         #set_trace()
         sents = utils.decode_sequence(loader.get_vocab(), seq)
 
@@ -105,9 +105,13 @@ def eval_split(model, crit, loader, eval_kwargs={}):
             if eval_kwargs.get('dump_path', 0) == 1:
                 entry['file_name'] = data['infos'][k]['file_path']
             predictions.append(entry)
+
+            vis_dir = eval_kwargs.get('vis_dir', './vis')
+
             if eval_kwargs.get('dump_images', 0) == 1:
                 # dump the raw image to vis/ folder
-                cmd = 'cp "' + os.path.join(eval_kwargs['image_root'], data['infos'][k]['file_path']) + '" vis/imgs/img' + str(len(predictions)) + '.jpg' # bit gross
+                # cmd = 'cp "' + os.path.join(eval_kwargs['image_root'], data['infos'][k]['file_path']) + '" vis/imgs/img' + str(len(predictions)) + '.jpg' # bit gross
+                cmd = 'cp "' + os.path.join(eval_kwargs['image_root'], data['infos'][k]['file_path']) + '" ' + os.path.join(vis_dir, 'imgs/img%d.jpg' % len(predictions))   # even worse
                 print(cmd)
                 os.system(cmd)
 

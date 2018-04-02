@@ -127,4 +127,5 @@ if lang_stats:
 
 if opt.dump_json == 1:
     # dump the json
-    json.dump(split_predictions, open('vis/vis.json', 'w'))
+    # json.dump(split_predictions, open('vis/vis.json', 'w'))
+    json.dump(split_predictions, open(os.path.join(opt.vis_dir, 'vis.json'), 'w'))

@@ -11,6 +11,8 @@ def parse_opt():
                     help='path to the directory containing the preprocessed att feats')
     parser.add_argument('--input_label_h5', type=str, default='data/coco_label.h5',
                     help='path to the h5file containing the preprocessed dataset')
+    parser.add_argument('--vis_dir', type=str, default='./vis',
+                    help='path to the vis directory for evaluation.')
     parser.add_argument('--start_from', type=str, default=None,
                     help="""continue training from saved model at this path. Path must contain files saved by previous training process: 
                         'infos.pkl'         : configuration;

@@ -23,7 +23,7 @@ def main(params):
 
     feat_mmp = None
 
-    for idx, fp in tqdm.tqdm(enumerate(fpaths)):
+    for idx, fp in tqdm.tqdm(enumerate(fpaths), total=len(fpaths)):
         if feat_type == 'fc':
             feat = np.load(fp)
         elif feat_type == 'att':
@@ -31,7 +31,7 @@ def main(params):
         else:
             raise ValueError("Invalid feat type, should be fc or att.")
 
-        if not feat_mmp:
+        if feat_mmp is None:
             mmp_shape = (len(fpaths),) + feat.shape
             print("mmp shape: ", mmp_shape)
             feat_mmp = np.memmap(params['output_path'] + '.mmp', dtype='float32', mode='w+', shape=mmp_shape)
